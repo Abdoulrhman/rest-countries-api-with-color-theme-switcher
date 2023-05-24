@@ -1,71 +1,78 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from "react";
+import { useQuery, gql } from "@apollo/client";
 
 export const GlobalContext = React.createContext();
 
 export const GlobalStorage = ({ children }) => {
   const [openFilter, setOpenFilter] = useState(false);
-  const [data, setData] = useState([]);
+  const [listCountries, setListCountries] = useState([]);
+  const [filteredCountries, setFilteredCountries] = useState([]);
   const [region, setRegion] = useState("all");
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [darkTheme, setDarkTheme] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  //fetch all location data and render on home
-  useEffect(async () => {
-    const theme = localStorage.getItem("theme");
-    if (theme === "true") {
-      setDarkTheme(true);
-    } else {
-      setDarkTheme(false);
+  const LIST_COUNTRIES = gql`
+    {
+      countries {
+        name
+        code
+        native
+        capital
+        emoji
+        currency
+        phone
+        languages {
+          code
+          name
+        }
+        continent {
+          name
+          code
+        }
+      }
     }
-    const response = await fetch("https://restcountries.com/v2/all");
-    const json = await response.json();
-    setData(json);
-    setLoading(false);
-  }, []);
+  `;
 
-  //create a new render applying the region filter
-  useEffect(async () => {
-    setLoading(true);
-    if (region !== "all") {
-      setOpenFilter(false);
-      const response = await fetch(`https://restcountries.com/v2/region/${region}`)
-      const json = await response.json();
-      setData(json);
-      setLoading(false);
+  const { data, loading } = useQuery(LIST_COUNTRIES);
+
+  useEffect(() => {
+    if (search !== "") {
+      const filteredList = data?.countries.filter((item) =>
+        item.name.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredCountries(filteredList);
     } else {
-      setOpenFilter(false);
-      const response = await fetch("https://restcountries.com/v2/all");
-      const json = await response.json();
-      setData(json);
-      setLoading(false);
-    }
-  }, [region]);
-
-  //create a new render applying the user search
-  useEffect(async () => {
-    if (search && search.length >= 3) {
-      setLoading(true);
-      const response = await fetch(`https://restcountries.com/v2/name/${search}`);
-      const json = await response.json();
-      !json.status && setData(json);
-      setLoading(false);
-    } else if (search === '') {
-      setLoading(true);
-      const response = await fetch("https://restcountries.com/v2/all");
-      const json = await response.json();
-      setData(json);
-      setLoading(false);
+      setFilteredCountries(listCountries);
     }
   }, [search]);
 
-  //apply theme config
+  //fetch all location data and render on home
+  useEffect(() => {
+    if (data) {
+      setListCountries(data.countries);
+      setFilteredCountries(data.countries);
+    }
+  }, [loading, data]);
+
   useEffect(() => {
     localStorage.setItem("theme", darkTheme);
   }, [darkTheme]);
 
   return (
-    <GlobalContext.Provider value={{ openFilter, setOpenFilter, data, setRegion, search, setSearch, darkTheme, setDarkTheme, loading, setLoading }}>
+    <GlobalContext.Provider
+      value={{
+        openFilter,
+        setOpenFilter,
+        filteredCountries,
+        setRegion,
+        search,
+        setSearch,
+        darkTheme,
+        setDarkTheme,
+        loading,
+      }}
+    >
       {children}
     </GlobalContext.Provider>
   );
