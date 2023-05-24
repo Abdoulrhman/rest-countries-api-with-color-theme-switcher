@@ -1,5 +1,7 @@
 .item > img {
   margin-bottom: 24px;
+  width: 100%;
+  height: 50%;
 }
 
 .item > strong,
@@ -21,14 +23,17 @@
 }
 
 .item {
-  min-width: 70vw;
-  max-width: 70vw;
+  width: 250px;
   margin: 0 auto;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.08);
   border-radius: 6px;
   padding-bottom: 16px;
   overflow: hidden;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.05);
+  }
 }
 
 .itemLight {
@@ -41,7 +46,7 @@
   color: var(--white);
 }
 
-@media (min-width: 658px){
+@media (min-width: 658px) {
   .item {
     min-width: auto;
   }

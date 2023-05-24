@@ -16,7 +16,7 @@ const Input = () => {
       className={`${styles.input} ${
         darkTheme ? styles.inputDark : styles.inputLight
       }`}
-      type="text"
+      type="search"
       placeholder="Search for a country..."
     />
   );
