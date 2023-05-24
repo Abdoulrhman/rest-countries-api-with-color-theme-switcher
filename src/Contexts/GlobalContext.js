@@ -8,7 +8,6 @@ export const GlobalStorage = ({ children }) => {
   const [openFilter, setOpenFilter] = useState(false);
   const [listCountries, setListCountries] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState([]);
-  const [region, setRegion] = useState("all");
   const [search, setSearch] = useState("");
   const [darkTheme, setDarkTheme] = useState(false);
 
@@ -65,7 +64,6 @@ export const GlobalStorage = ({ children }) => {
         openFilter,
         setOpenFilter,
         filteredCountries,
-        setRegion,
         search,
         setSearch,
         darkTheme,

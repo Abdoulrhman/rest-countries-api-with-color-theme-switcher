@@ -1,9 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { GlobalContext } from "../Contexts/GlobalContext";
 import styles from "./Home.module.css";
 import Header from "./Header/index";
 import Input from "./Input/index";
-import Filter from "./Filter/index";
 import Item from "./Item/index";
 
 const Home = () => {
